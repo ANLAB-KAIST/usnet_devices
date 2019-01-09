@@ -1,0 +1,10 @@
+[package]
+name = "usnet_devices"
+version = "0.1.0"
+authors = ["Kai Lüke <kailueke@riseup.net>"]
+license = "MIT"
+
+[dependencies]
+netmap_sys = { git = "https://github.com/pothos/netmap_sys", branch = "netmap-update", features = ["netmap_with_libs"] }
+smoltcp = { git = "https://github.com/m-labs/smoltcp" }
+libc = "*"
