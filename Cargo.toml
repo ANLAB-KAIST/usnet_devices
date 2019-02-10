@@ -5,6 +5,10 @@ authors = ["Kai Lüke <kailueke@riseup.net>"]
 license = "MIT"
 
 [dependencies]
-netmap_sys = { git = "https://github.com/pothos/netmap_sys", branch = "netmap-update", features = ["netmap_with_libs"] }
+netmap_sys = { git = "https://github.com/pothos/netmap_sys", branch = "netmap-update", features = ["netmap_with_libs"], optional = true }
 smoltcp = { git = "https://github.com/m-labs/smoltcp" }
 libc = "*"
+
+[features]
+default = []
+netmap = ["netmap_sys"]

@@ -1,8 +1,11 @@
 extern crate libc;
 extern crate smoltcp;
 
+#[cfg(feature = "netmap")]
 mod netmap;
+#[cfg(feature = "netmap")]
 mod nm;
+
 mod raw_socket;
 mod raw_socket_sys;
 mod tap_interface;
@@ -10,7 +13,9 @@ mod tap_interface_sys;
 mod uds;
 mod unixdomainsocket;
 
+#[cfg(feature = "netmap")]
 pub use self::netmap::{nmreq, Netmap, RxToken as NetmapRxToken, TxToken as NetmapTxToken};
+
 pub use self::raw_socket::{RawSocket, RxToken as RawSocketRxToken, TxToken as RawSocketTxToken};
 pub use self::tap_interface::{
     RxToken as TapInterfaceRxToken, TapInterface, TxToken as TapInterfaceTxToken,
