@@ -70,7 +70,7 @@ impl<'a> Device<'a> for TapInterface {
 
     fn capabilities(&self) -> DeviceCapabilities {
         let mut caps = DeviceCapabilities::default();
-        caps.max_transmission_unit = self.mtu - self.reduce_mtu_by.unwrap_or(0);;
+        caps.max_transmission_unit = self.mtu - self.reduce_mtu_by.unwrap_or(0);
         caps
     }
 
@@ -106,9 +106,10 @@ pub struct RxToken {
 impl phy::RxToken for RxToken {
     fn consume<R, F>(self, _timestamp: Instant, f: F) -> Result<R>
     where
-        F: FnOnce(&[u8]) -> Result<R>,
+        F: FnOnce(&mut [u8]) -> Result<R>,
     {
-        f(&self.buffer[..])
+        let mut buffer = self.buffer.clone();
+        f(&mut buffer[..])
     }
 }
 
