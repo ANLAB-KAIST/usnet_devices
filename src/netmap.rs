@@ -108,7 +108,7 @@ impl<'a> Device<'a> for Netmap {
 
     fn capabilities(&self) -> DeviceCapabilities {
         let mut caps = DeviceCapabilities::default();
-        caps.max_transmission_unit = self.mtu - self.reduce_mtu_by.unwrap_or(0);;
+        caps.max_transmission_unit = self.mtu - self.reduce_mtu_by.unwrap_or(0);
         caps
     }
 
@@ -151,15 +151,15 @@ impl<'a> Device<'a> for Netmap {
 
 #[doc(hidden)]
 pub struct RxToken {
-    read_buffer: &'static [u8], // safe usage only before next receive
+    read_buffer: &'static mut [u8], // safe usage only before next receive
 }
 
 impl<'a> phy::RxToken for RxToken {
-    fn consume<R, F>(self, _timestamp: Instant, f: F) -> Result<R>
+    fn consume<R, F>(mut self, _timestamp: Instant, f: F) -> Result<R>
     where
-        F: FnOnce(&[u8]) -> Result<R>,
+        F: FnOnce(&mut [u8]) -> Result<R>,
     {
-        f(self.read_buffer)
+        f(&mut self.read_buffer)
     }
 }
 

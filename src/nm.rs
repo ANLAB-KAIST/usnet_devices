@@ -63,7 +63,7 @@ impl NetmapDesc {
             Err(io::Error::last_os_error())
         } else {
             let buf_size = fs::read_to_string("/sys/module/netmap/parameters/buf_size")?
-                .trim_right()
+                .trim_end()
                 .parse()
                 .unwrap();
 
@@ -130,7 +130,7 @@ impl NetmapDesc {
             Err(io::Error::last_os_error())
         } else {
             let buf_size = fs::read_to_string("/sys/module/netmap/parameters/buf_size")?
-                .trim_right()
+                .trim_end()
                 .parse()
                 .unwrap();
 
@@ -179,8 +179,8 @@ impl NetmapDesc {
         mtu
     }
 
-    pub fn recv(&mut self) -> io::Result<(&'static [u8])> {
-        unsafe fn find_nextpkt(d: *mut nm_desc) -> Option<(&'static [u8], *mut netmap_slot)> {
+    pub fn recv(&mut self) -> io::Result<&'static mut [u8]> {
+        unsafe fn find_nextpkt(d: *mut nm_desc) -> Option<(&'static mut [u8], *mut netmap_slot)> {
             let mut ri = (*d).cur_rx_ring;
 
             loop {
@@ -191,7 +191,7 @@ impl NetmapDesc {
                     let slots: *mut netmap_slot = mem::transmute(&mut (*ring).slot);
                     let slot = slots.offset(i as isize);
                     let buf = NETMAP_BUF(ring, (*slot).buf_idx as isize);
-                    let slice = slice::from_raw_parts(buf as *const u8, (*slot).len as usize);
+                    let slice = slice::from_raw_parts_mut(buf as *mut u8, (*slot).len as usize);
                     let next = nm_ring_next(ring, i);
                     (*ring).head = next;
                     (*ring).cur = next;
